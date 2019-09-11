@@ -22,7 +22,7 @@ install:
 
 
 script:
-  - pytest -v --cov=pytorch_privacy --cov-report term-missing
+  - pytest -v --cov pytorch_privacy --cov-report term-missing
 
 
 after_success:
