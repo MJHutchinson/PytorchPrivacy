@@ -5,8 +5,8 @@ import torch
 
 import numpy as np
 
-import src.utils.torch_nest_utils as nest
-import src.utils.numpy_nest_utils as np_nest
+import pytorch_privacy.utils.torch_nest_utils as nest
+import pytorch_privacy.utils.numpy_nest_utils as np_nest
 
 
 class DPQuery(abc.ABC):

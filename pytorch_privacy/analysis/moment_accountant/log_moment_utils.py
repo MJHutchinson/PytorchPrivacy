@@ -8,7 +8,7 @@ from functools import lru_cache
 import mpmath as mp
 import numpy as np
 
-from src.analysis.utils import grab_pickled_accountant_results
+from pytorch_privacy.analysis.utils import grab_pickled_accountant_results
 
 float_type = np.float32
 int_type = np.int32

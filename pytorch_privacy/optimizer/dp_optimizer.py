@@ -4,9 +4,9 @@ from math import ceil
 import numpy as np
 import torch
 
-import src.utils.torch_nest_utils as nest
-from src.analysis import QueryWithLedger
-from src.dp_query import GaussianDPQuery
+import pytorch_privacy.utils.torch_nest_utils as nest
+from pytorch_privacy.analysis import QueryWithLedger
+from pytorch_privacy.dp_query import GaussianDPQuery
 from .wrapper_optimizer import WrapperOptimizer
 import logging
 
