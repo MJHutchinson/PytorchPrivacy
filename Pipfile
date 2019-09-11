@@ -6,6 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+numpy = "*"
+mpmath = "*"
+torch = "==1.1.0"
 
 [requires]
 python_version = "3.7"

@@ -4,6 +4,10 @@ from .wrapper_optimizer import WrapperOptimizer
 
 
 class StandardOptimizer(WrapperOptimizer):
+    """
+    Wrapper for optimisers that does not do any differential privacy. A utility to allow easy coding for comparing
+    dp and non dp optimisation
+    """
 
     def __init__(self, optimizer, model, loss_per_example):
         self.optimizer = optimizer

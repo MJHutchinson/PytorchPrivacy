@@ -1,17 +1,19 @@
-import math
 import os
+import math
 import pickle
+import logging
+
+from functools import lru_cache
 
 import mpmath as mp
 import numpy as np
-from repoze.lru import lru_cache
 
-from src.privacy.analysis.utils import grab_pickled_accountant_results
+from src.analysis.utils import grab_pickled_accountant_results
 
 float_type = np.float32
 int_type = np.int32
 
-from ray.services import logger
+logger = logging.getLogger()
 
 
 def to_np_float_64(v):
@@ -37,7 +39,7 @@ def integral_inf_mp(fn):
     return integral
 
 
-@lru_cache(maxsize=100)
+@lru_cache(maxsize=128)
 def generate_log_moments(q, noise_scale, max_lambda):
     # these moments are a function of q, noise_scale and max_lambda
 

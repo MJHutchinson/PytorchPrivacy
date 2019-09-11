@@ -6,7 +6,7 @@ import torch
 
 import src.utils.numpy_nest_utils as np_nest
 import src.utils.torch_nest_utils as nest
-from src.privacy.dp_query import dp_query
+from src.dp_query import dp_query
 
 logger = logging.getLogger(__name__)
 

@@ -1,14 +1,18 @@
-""" Paper: https://arxiv.org/abs/1906.03049
-    Referenced code from: https://github.com/DPBayes/PLD-Accountant """
+"""
+    Paper: https://arxiv.org/abs/1906.03049
+    Referenced code from: https://github.com/DPBayes/PLD-Accountant
+"""
 
 import os
 import pickle
+import logging
 
 import numpy as np
-from ray.services import logger
-from repoze.lru import lru_cache
+from functools import lru_cache
 
-from src.privacy.analysis.utils import grab_pickled_accountant_results
+from src.analysis.utils import grab_pickled_accountant_results
+
+logger = logging.getLogger()
 
 
 @lru_cache(maxsize=100)

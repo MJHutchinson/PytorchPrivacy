@@ -1,3 +1,8 @@
+"""
+    Original paper at https://arxiv.org/abs/1607.00133
+"""
+
+
 import numpy as np
 
 from .log_moment_utils import generate_log_moments

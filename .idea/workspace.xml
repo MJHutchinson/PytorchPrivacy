@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="33739963-786a-4eb3-a470-9af535350e09" name="Default Changelist" comment="" />
+    <list default="true" id="33739963-786a-4eb3-a470-9af535350e09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/utils/numpy_nest_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/numpy_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/torch_nest_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/torch_tensor_buffer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/moment_accountant/log_moment_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/moment_accountant/log_moment_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/moment_accountant/moment_accountant.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/moment_accountant/moment_accountant.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/pld_accountant/compute_eps_var.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/pld_accountant/pld_accountant.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/pld_accountant/pld_accountant.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/privacy_ledger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/privacy_ledger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dp_query/dp_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dp_query/dp_query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dp_query/gaussian_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dp_query/gaussian_query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/optimizer/dp_optimizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/optimizer/dp_optimizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/optimizer/wrapper_optimizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/optimizer/wrapper_optimizer.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,10 +28,19 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/analysis/privacy_ledger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2760">
+              <caret line="6" column="38" selection-start-line="6" selection-start-column="38" selection-end-line="6" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/analysis/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="60" selection-start-line="6" selection-start-column="60" selection-end-line="6" selection-end-column="60" />
+            <state relative-caret-position="330">
+              <caret line="22" column="53" lean-forward="true" selection-start-line="22" selection-start-column="53" selection-end-line="22" selection-end-column="53" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -23,9 +49,31 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/dp_query/dp_query.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="555">
+              <caret line="108" lean-forward="true" selection-start-line="108" selection-end-line="108" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/dp_query/gaussian_query.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="7" column="40" lean-forward="true" selection-start-line="7" selection-start-column="40" selection-end-line="7" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/optimizer/dp_optimizer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="255">
+              <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -33,37 +81,40 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/optimizer/wrapper_optimizer.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/optimizer/standard_optimizer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
+        <entry file="file://$PROJECT_DIR$/src/utils/numpy_utils.py">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/src/analysis/moment_accountant/log_moment_utils.py" />
+        <option value="$PROJECT_DIR$/src/optimizer/wrapper_optimizer.py" />
+        <option value="$PROJECT_DIR$/src/analysis/moment_accountant/moment_accountant.py" />
+        <option value="$PROJECT_DIR$/src/analysis/pld_accountant/pld_accountant.py" />
+        <option value="$PROJECT_DIR$/src/analysis/pld_accountant/compute_eps_var.py" />
+        <option value="$PROJECT_DIR$/src/analysis/privacy_ledger.py" />
+        <option value="$PROJECT_DIR$/Pipfile" />
         <option value="$PROJECT_DIR$/src/analysis/utils.py" />
+        <option value="$PROJECT_DIR$/src/dp_query/dp_query.py" />
+        <option value="$PROJECT_DIR$/src/dp_query/gaussian_query.py" />
+        <option value="$PROJECT_DIR$/src/optimizer/dp_optimizer.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="274" />
-    <option name="y" value="746" />
-    <option name="width" value="1869" />
-    <option name="height" value="694" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="67" />
+    <option name="y" value="-2" />
+    <option name="width" value="2493" />
+    <option name="height" value="1442" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -98,6 +149,13 @@
               <item name="PytorchPrivacy" type="b2602c69:ProjectViewProjectNode" />
               <item name="PytorchPrivacy" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="analysis" type="462c0819:PsiDirectoryNode" />
+              <item name="pld_accountant" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PytorchPrivacy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PytorchPrivacy" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="dp_query" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -105,6 +163,12 @@
               <item name="PytorchPrivacy" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="optimizer" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PytorchPrivacy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PytorchPrivacy" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -114,13 +178,15 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/utils" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/utils" />
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
@@ -146,24 +212,25 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1568193834645</updated>
-      <workItem from="1568193840855" duration="1075000" />
+      <workItem from="1568193840855" duration="5309000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1075000" />
+    <option name="totallyTimeSpent" value="5309000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="274" y="746" width="1869" height="694" extended-state="0" />
+    <frame x="67" y="-2" width="2493" height="1442" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.33516183" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2496935" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.7636684" />
+      <window_info anchor="bottom" id="Python Console" visible="true" weight="0.32977912" />
+      <window_info anchor="bottom" id="Terminal" weight="0.32977912" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -183,25 +250,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/analysis/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="60" selection-start-line="6" selection-start-column="60" selection-end-line="6" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/optimizer/dp_optimizer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/optimizer/standard_optimizer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -211,8 +259,112 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/analysis/moment_accountant/log_moment_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="37" column="60" lean-forward="true" selection-start-line="37" selection-start-column="60" selection-end-line="37" selection-end-column="60" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/optimizer/wrapper_optimizer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="33" column="17" lean-forward="true" selection-start-line="33" selection-start-column="17" selection-end-line="33" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/analysis/pld_accountant/compute_eps_var.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2115">
+          <caret line="6" column="50" lean-forward="true" selection-start-line="6" selection-start-column="50" selection-end-line="6" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/analysis/online_accountant.py">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/torch_tensor_buffer.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pipfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/analysis/moment_accountant/moment_accountant.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1245">
+          <caret line="83" column="68" selection-start-line="83" selection-start-column="68" selection-end-line="83" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/analysis/pld_accountant/pld_accountant.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-645">
+          <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+          <folding>
+            <element signature="e#117#126#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/numpy_nest_utils.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/numpy_utils.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/analysis/privacy_ledger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2760">
+          <caret line="6" column="38" selection-start-line="6" selection-start-column="38" selection-end-line="6" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/analysis/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="53" lean-forward="true" selection-start-line="22" selection-start-column="53" selection-end-line="22" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/dp_query/dp_query.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="108" lean-forward="true" selection-start-line="108" selection-end-line="108" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/dp_query/gaussian_query.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="40" lean-forward="true" selection-start-line="7" selection-start-column="40" selection-end-line="7" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/optimizer/dp_optimizer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
   </component>
 </project>

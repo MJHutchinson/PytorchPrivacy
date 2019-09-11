@@ -5,7 +5,9 @@ import logging
 logger = logging.getLogger()
 
 # Directory in which to store precomputed accountant tables.
-accountant_tables_dir = "accountant_tables"
+accountant_tables_dir = os.path.expanduser('~/.pytorch_privacy/cache')
+if not os.path.isdir(accountant_tables_dir):
+    os.makedirs(accountant_tables_dir)
 
 
 def set_accountant_tables_dir(new_dir):
