@@ -19,3 +19,11 @@ matrix:
 install:
   - pip install pipenv
   - pipenv install --dev
+
+
+script:
+  - pytest -v --cov=gpar --cov-report term-missing
+
+
+after_success:
+  - coveralls
