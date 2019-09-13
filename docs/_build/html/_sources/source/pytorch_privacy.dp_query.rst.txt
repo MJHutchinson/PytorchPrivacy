@@ -1,0 +1,15 @@
+pytorch\_privacy.dp\_query package
+==================================
+
+.. automodule:: pytorch_privacy.dp_query
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   pytorch_privacy.dp_query.dp_query
+   pytorch_privacy.dp_query.gaussian_query

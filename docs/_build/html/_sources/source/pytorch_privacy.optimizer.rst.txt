@@ -1,0 +1,16 @@
+pytorch\_privacy.optimizer package
+==================================
+
+.. automodule:: pytorch_privacy.optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   pytorch_privacy.optimizer.dp_optimizer
+   pytorch_privacy.optimizer.standard_optimizer
+   pytorch_privacy.optimizer.wrapper_optimizer

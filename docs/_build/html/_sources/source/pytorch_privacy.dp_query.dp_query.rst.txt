@@ -1,0 +1,7 @@
+pytorch\_privacy.dp\_query.dp\_query module
+===========================================
+
+.. automodule:: pytorch_privacy.dp_query.dp_query
+   :members:
+   :undoc-members:
+   :show-inheritance:

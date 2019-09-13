@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pytorch_privacy.dp_query.gaussian_query &mdash; Pytorch Privacy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Pytorch Privacy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">PytorchPrivacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Application Programming Interface</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pytorch Privacy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pytorch_privacy.dp_query.gaussian_query</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pytorch_privacy.dp_query.gaussian_query</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">import</span> <span class="nn">pytorch_privacy.utils.numpy_nest_utils</span> <span class="k">as</span> <span class="nn">np_nest</span>
+<span class="kn">import</span> <span class="nn">pytorch_privacy.utils.torch_nest_utils</span> <span class="k">as</span> <span class="nn">nest</span>
+<span class="kn">from</span> <span class="nn">pytorch_privacy.dp_query</span> <span class="k">import</span> <span class="n">dp_query</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GaussianDPQuery"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery">[docs]</a><span class="k">class</span> <span class="nc">GaussianDPQuery</span><span class="p">(</span><span class="n">dp_query</span><span class="o">.</span><span class="n">SumAggregationDPQuery</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Implements the DPQuery interface for Gaussian noise sum queries</span>
+
+<span class="sd">    Accumulates records via sum and applies Gaussian noise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_GlobalState</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s1">&#39;_GlobalState&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;l2_norm_clip&#39;</span><span class="p">,</span> <span class="s1">&#39;noise_stddev&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">noise_stddev</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param l2_norm_clip: Clipping bound to apply to the records magnitude.</span>
+<span class="sd">        :param noise_stddev: The noise magnitude to apply to the query.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_l2_norm_clip</span> <span class="o">=</span> <span class="n">l2_norm_clip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_record_l2_norm</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_noise_stddev</span> <span class="o">=</span> <span class="n">noise_stddev</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="GaussianDPQuery.set_ledger"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery.set_ledger">[docs]</a>    <span class="k">def</span> <span class="nf">set_ledger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ledger</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span> <span class="o">=</span> <span class="n">ledger</span></div>
+
+<div class="viewcode-block" id="GaussianDPQuery.make_global_state"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery.make_global_state">[docs]</a>    <span class="k">def</span> <span class="nf">make_global_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">noise_stddev</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GlobalState</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">noise_stddev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GaussianDPQuery.initial_global_state"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery.initial_global_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_global_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_global_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l2_norm_clip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_noise_stddev</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GaussianDPQuery.derive_sample_params"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery.derive_sample_params">[docs]</a>    <span class="k">def</span> <span class="nf">derive_sample_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_state</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">global_state</span><span class="o">.</span><span class="n">l2_norm_clip</span></div>
+
+<div class="viewcode-block" id="GaussianDPQuery.initial_sample_state"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery.initial_sample_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_sample_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_groups</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">,</span> <span class="n">param_groups</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GaussianDPQuery.get_record_derived_data"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery.get_record_derived_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_record_derived_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;l2_norm:&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record_l2_norm</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="GaussianDPQuery.preprocess_record"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery.preprocess_record">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the scaled record and also the l2 norm (to deduce whether clipping occured or not)</span>
+
+<span class="sd">        :param params:</span>
+<span class="sd">        :param record:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">l2_norm_clip</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="c1"># logger.debug(f&quot;clipping bound {l2_norm_clip}&quot;)</span>
+        <span class="n">l2_norm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nest</span><span class="o">.</span><span class="n">reduce_structure</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
+                                                   <span class="n">torch</span><span class="o">.</span><span class="n">add</span><span class="p">,</span>
+                                                   <span class="n">record</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_record_l2_norm</span> <span class="o">=</span> <span class="n">l2_norm</span>
+        <span class="k">if</span> <span class="n">l2_norm</span> <span class="o">&lt;</span> <span class="n">l2_norm_clip</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">record</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">l2_norm</span> <span class="o">/</span> <span class="n">l2_norm_clip</span><span class="p">)),</span> <span class="n">record</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GaussianDPQuery.get_noised_result"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.GaussianDPQuery.get_noised_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_noised_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">global_state</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">p</span> <span class="o">+</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">*</span> <span class="n">global_state</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span><span class="o">.</span><span class="n">record_sum_query</span><span class="p">(</span><span class="n">global_state</span><span class="o">.</span><span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">global_state</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">add_noise</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">),</span> <span class="n">global_state</span></div></div>
+
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery">[docs]</a><span class="k">class</span> <span class="nc">NumpyGaussianDPQuery</span><span class="p">(</span><span class="n">dp_query</span><span class="o">.</span><span class="n">DPQuery</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Implements the DPQuery interface for Gaussian noise sum queries where it is assumed that the inputs are dictionaries</span>
+<span class="sd">        of numpy parameters</span>
+
+<span class="sd">       Accumulates records via sum and applies Gaussian noise</span>
+<span class="sd">       &quot;&quot;&quot;</span>
+
+    <span class="n">_GlobalState</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s1">&#39;_GlobalState&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;l2_norm_clip&#39;</span><span class="p">,</span> <span class="s1">&#39;noise_stddev&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">noise_stddev</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param l2_norm_clip: Clipping bound to apply to the records magnitude.</span>
+<span class="sd">        :param noise_stddev: The noise magnitude to apply to the query.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_l2_norm_clip</span> <span class="o">=</span> <span class="n">l2_norm_clip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_record_l2_norm</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_noise_stddev</span> <span class="o">=</span> <span class="n">noise_stddev</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.set_ledger"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.set_ledger">[docs]</a>    <span class="k">def</span> <span class="nf">set_ledger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ledger</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span> <span class="o">=</span> <span class="n">ledger</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.make_global_state"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.make_global_state">[docs]</a>    <span class="k">def</span> <span class="nf">make_global_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">noise_stddev</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GlobalState</span><span class="p">(</span>
+            <span class="n">l2_norm_clip</span><span class="p">,</span>
+            <span class="n">noise_stddev</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.initial_global_state"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.initial_global_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_global_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_global_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l2_norm_clip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_noise_stddev</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.derive_sample_params"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.derive_sample_params">[docs]</a>    <span class="k">def</span> <span class="nf">derive_sample_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_state</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">global_state</span><span class="o">.</span><span class="n">l2_norm_clip</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.get_record_derived_data"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.get_record_derived_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_record_derived_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;l2_norm:&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record_l2_norm</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.preprocess_record"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.preprocess_record">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the scaled record and also the l2 norm (to deduce whether clipping occured or not)</span>
+
+<span class="sd">        :param params:</span>
+<span class="sd">        :param record:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">l2_norm_clip</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Using </span><span class="si">{l2_norm_clip}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">l2_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np_nest</span><span class="o">.</span><span class="n">reduce_structure</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
+                                                   <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">,</span>
+                                                   <span class="n">record</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_record_l2_norm</span> <span class="o">=</span> <span class="n">l2_norm</span>
+        <span class="k">if</span> <span class="n">l2_norm</span> <span class="o">&lt;</span> <span class="n">l2_norm_clip</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">record</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np_nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">l2_norm</span> <span class="o">/</span> <span class="n">l2_norm_clip</span><span class="p">)),</span> <span class="n">record</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.get_noised_result"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.get_noised_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_noised_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">global_state</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">p</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">global_state</span><span class="o">.</span><span class="n">noise_stddev</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span><span class="o">.</span><span class="n">record_sum_query</span><span class="p">(</span><span class="n">global_state</span><span class="o">.</span><span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">global_state</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np_nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">add_noise</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">),</span> <span class="n">global_state</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.initial_sample_state"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.initial_sample_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_sample_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_groups</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return state of zeros the same shape as the parameter groups.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np_nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">,</span> <span class="n">param_groups</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.accumulate_preprocessed_record"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.accumulate_preprocessed_record">[docs]</a>    <span class="k">def</span> <span class="nf">accumulate_preprocessed_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np_nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NumpyGaussianDPQuery.merge_sample_states"><a class="viewcode-back" href="../../../source/pytorch_privacy.dp_query.gaussian_query.html#pytorch_privacy.dp_query.gaussian_query.NumpyGaussianDPQuery.merge_sample_states">[docs]</a>    <span class="k">def</span> <span class="nf">merge_sample_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state_1</span><span class="p">,</span> <span class="n">sample_state_2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np_nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">sample_state_1</span><span class="p">,</span> <span class="n">sample_state_2</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Michael Hutchinson, Mrinank Sharma
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

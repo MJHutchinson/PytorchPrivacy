@@ -1,0 +1,7 @@
+pytorch\_privacy.optimizer.wrapper\_optimizer module
+====================================================
+
+.. automodule:: pytorch_privacy.optimizer.wrapper_optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:

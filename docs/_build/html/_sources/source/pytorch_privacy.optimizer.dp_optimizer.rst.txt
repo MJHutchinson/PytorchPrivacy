@@ -1,0 +1,7 @@
+pytorch\_privacy.optimizer.dp\_optimizer module
+===============================================
+
+.. automodule:: pytorch_privacy.optimizer.dp_optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:

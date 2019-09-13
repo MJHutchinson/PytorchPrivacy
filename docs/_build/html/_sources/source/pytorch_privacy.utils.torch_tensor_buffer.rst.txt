@@ -1,0 +1,7 @@
+pytorch\_privacy.utils.torch\_tensor\_buffer module
+===================================================
+
+.. automodule:: pytorch_privacy.utils.torch_tensor_buffer
+   :members:
+   :undoc-members:
+   :show-inheritance:

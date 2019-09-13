@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pytorch_privacy.optimizer.dp_optimizer &mdash; Pytorch Privacy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Pytorch Privacy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">PytorchPrivacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Application Programming Interface</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pytorch Privacy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pytorch_privacy.optimizer.dp_optimizer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pytorch_privacy.optimizer.dp_optimizer</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">ceil</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">import</span> <span class="nn">pytorch_privacy.utils.torch_nest_utils</span> <span class="k">as</span> <span class="nn">nest</span>
+<span class="kn">from</span> <span class="nn">pytorch_privacy.analysis</span> <span class="k">import</span> <span class="n">QueryWithLedger</span>
+<span class="kn">from</span> <span class="nn">pytorch_privacy.dp_query</span> <span class="k">import</span> <span class="n">GaussianDPQuery</span>
+<span class="kn">from</span> <span class="nn">.wrapper_optimizer</span> <span class="k">import</span> <span class="n">WrapperOptimizer</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DPOptimizer"><a class="viewcode-back" href="../../../source/pytorch_privacy.optimizer.dp_optimizer.html#pytorch_privacy.optimizer.dp_optimizer.DPOptimizer">[docs]</a><span class="k">class</span> <span class="nc">DPOptimizer</span><span class="p">(</span><span class="n">WrapperOptimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Optimiser wrapper for doing differential privacy on any gradient based PyTorch optimiser.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">optimizer</span><span class="p">,</span>
+                 <span class="n">model</span><span class="p">,</span>
+                 <span class="n">loss_per_example</span><span class="p">,</span>
+                 <span class="n">dp_sum_query</span><span class="p">,</span>
+                 <span class="n">num_microbatches</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wraps a PyTorch optimiser with a given model and loss function. To do differential privacy, we need to take per</span>
+<span class="sd">        example gradients, so the loss function must be per example (i.e. a vector).</span>
+<span class="sd">        :param optimizer: A base PyTorch to use for the optimisation</span>
+<span class="sd">        :param model: An instance of nn.Module that computes the outputs y_hat from an input x</span>
+<span class="sd">        :param loss_per_example: A vector loss function that takes y_true and y_hat to comupte the loss</span>
+<span class="sd">        :param dp_sum_query: An instance of a DP query to track privacy loss with</span>
+<span class="sd">        :param num_microbatches: A number of microbatches to split the data into. If None, do not use microbatching</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_per_example</span> <span class="o">=</span> <span class="n">loss_per_example</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dp_sum_query</span> <span class="o">=</span> <span class="n">dp_sum_query</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_microbatches</span> <span class="o">=</span> <span class="n">num_microbatches</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_summary_value</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_global_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp_sum_query</span><span class="o">.</span><span class="n">initial_global_state</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_derived_records_data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DPOptimizer.fit_batch"><a class="viewcode-back" href="../../../source/pytorch_privacy.optimizer.dp_optimizer.html#pytorch_privacy.optimizer.dp_optimizer.DPOptimizer.fit_batch">[docs]</a>    <span class="k">def</span> <span class="nf">fit_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a single gradient optimisation step of the model with differentially private gradients</span>
+<span class="sd">        :param x: The model inputs</span>
+<span class="sd">        :param y: The model outputs</span>
+<span class="sd">        :return: The total loss of (x, y) at this step</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Compute the per datapoint loss</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_per_example</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># Grab the param groups to be optimised form the optimiser</span>
+        <span class="n">param_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span>
+
+        <span class="c1"># Get the correct shape gradient tensors to then set to the initial</span>
+        <span class="c1"># state of the sample. Often all zero for zero gradients.</span>
+        <span class="n">sample_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp_sum_query</span><span class="o">.</span><span class="n">initial_sample_state</span><span class="p">(</span>
+            <span class="n">nest</span><span class="o">.</span><span class="n">parameters_to_tensor_groups</span><span class="p">(</span><span class="n">param_groups</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Get the parameters for doing the dp query on this sample of data</span>
+        <span class="n">sample_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp_sum_query</span><span class="o">.</span><span class="n">derive_sample_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_global_parameters</span><span class="p">)</span>
+
+        <span class="c1"># compute the appropriate microbatch size</span>
+        <span class="n">microbatch_size</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_microbatches</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ceil</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_microbatches</span><span class="p">)</span>
+
+        <span class="c1"># Chunk the losses into microbatches</span>
+        <span class="n">microbatches_losses</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">microbatch_size</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">process_microbatch</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">):</span>
+            <span class="c1"># Zero out the current gradients on parameters</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="c1"># Take the mean of the losses, so that we compute the mean gradient</span>
+            <span class="n">microbatch_loss</span> <span class="o">=</span> <span class="n">losses</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># Compute the gradients for this microbacth</span>
+            <span class="n">microbatch_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">(</span><span class="n">retain_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># Extract the gradients from the parameters of interest</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_grads</span><span class="p">(</span><span class="n">param_groups</span><span class="p">)</span>
+            <span class="c1"># Accumulate the gradients onto the current sample stack, applying what ever DP operations are required</span>
+            <span class="n">sample_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp_sum_query</span><span class="o">.</span><span class="n">accumulate_record</span><span class="p">(</span><span class="n">sample_params</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span>
+            <span class="c1"># Gather any information of interest from the query</span>
+            <span class="n">derived_record_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp_sum_query</span><span class="o">.</span><span class="n">get_record_derived_data</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">derived_record_data</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_derived_records_data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="c1"># For each microbatch, process the gradients</span>
+        <span class="k">for</span> <span class="n">losses</span> <span class="ow">in</span> <span class="n">microbatches_losses</span><span class="p">:</span>
+            <span class="n">sample_state</span><span class="p">,</span> <span class="n">derived_record_data</span> <span class="o">=</span> <span class="n">process_microbatch</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span>
+                                                                   <span class="n">sample_state</span><span class="p">)</span>  <span class="c1"># accumulate up the clipped microbatch gradients</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">derived_record_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_derived_records_data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_derived_records_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_derived_records_data</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_records_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># summarise statistics instead</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derived_records_data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">,</span> <span class="mf">70.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;l2_norm:&quot;</span><span class="p">:</span>
+                <span class="n">p_clip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_parameters</span><span class="o">.</span><span class="n">l2_norm_clip</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_summary_value</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;percentage_clipped&quot;</span><span class="p">:</span> <span class="n">p_clip</span><span class="p">}</span>
+
+        <span class="c1"># Finish the DP query, usually by adding noise to the accumulated gradient information</span>
+        <span class="n">final_grads</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp_sum_query</span><span class="o">.</span><span class="n">get_noised_result</span><span class="p">(</span><span class="n">sample_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_parameters</span><span class="p">)</span>
+
+        <span class="c1"># for k, v in self.model.named_parameters():</span>
+        <span class="c1">#     logger.debug(f&quot;{k} mean_grad {torch.sqrt(torch.mean(v.grad.data ** 2))}&quot;)</span>
+
+        <span class="c1"># Put the DP gradients onto the parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_grads</span><span class="p">(</span><span class="n">param_groups</span><span class="p">,</span> <span class="n">grads</span><span class="o">=</span><span class="n">final_grads</span><span class="p">)</span>
+
+        <span class="c1"># Finally, take the optimisation step with the DP gradients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+        <span class="c1"># return the loss at the start (for efficiency purposes)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DPOptimizer.apply_grads"><a class="viewcode-back" href="../../../source/pytorch_privacy.optimizer.dp_optimizer.html#pytorch_privacy.optimizer.dp_optimizer.DPOptimizer.apply_grads">[docs]</a>    <span class="k">def</span> <span class="nf">apply_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_groups</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">param_group</span><span class="p">,</span> <span class="n">grad_group</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">param_groups</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">grad</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">param_group</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">],</span> <span class="n">grad_group</span><span class="p">):</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">grad</span></div>
+
+<div class="viewcode-block" id="DPOptimizer.get_grads"><a class="viewcode-back" href="../../../source/pytorch_privacy.optimizer.dp_optimizer.html#pytorch_privacy.optimizer.dp_optimizer.DPOptimizer.get_grads">[docs]</a>    <span class="k">def</span> <span class="nf">get_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_groups</span><span class="p">):</span>
+        <span class="n">grads</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">param_groups</span><span class="p">:</span>
+            <span class="n">group_grads</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">]:</span>
+                <span class="n">group_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
+            <span class="n">grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_grads</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">grads</span></div>
+
+<div class="viewcode-block" id="DPOptimizer.get_logged_statistics"><a class="viewcode-back" href="../../../source/pytorch_privacy.optimizer.dp_optimizer.html#pytorch_privacy.optimizer.dp_optimizer.DPOptimizer.get_logged_statistics">[docs]</a>    <span class="k">def</span> <span class="nf">get_logged_statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_records_data</span></div>
+
+<div class="viewcode-block" id="DPOptimizer.get_step_summary"><a class="viewcode-back" href="../../../source/pytorch_privacy.optimizer.dp_optimizer.html#pytorch_privacy.optimizer.dp_optimizer.DPOptimizer.get_step_summary">[docs]</a>    <span class="k">def</span> <span class="nf">get_step_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summary_value</span></div></div>
+
+
+<div class="viewcode-block" id="DPGaussianOptimizer"><a class="viewcode-back" href="../../../source/pytorch_privacy.optimizer.dp_optimizer.html#pytorch_privacy.optimizer.dp_optimizer.DPGaussianOptimizer">[docs]</a><span class="k">class</span> <span class="nc">DPGaussianOptimizer</span><span class="p">(</span><span class="n">DPOptimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Specific Gaussian mechanism optimizer for L2 clipping and noise privacy &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">l2_norm_clip</span><span class="p">,</span>
+                 <span class="n">noise_multiplier</span><span class="p">,</span>
+                 <span class="n">ledger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">dp_sum_query</span> <span class="o">=</span> <span class="n">GaussianDPQuery</span><span class="p">(</span><span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">l2_norm_clip</span> <span class="o">*</span> <span class="n">noise_multiplier</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ledger</span><span class="p">:</span>
+            <span class="n">dp_sum_query</span> <span class="o">=</span> <span class="n">QueryWithLedger</span><span class="p">(</span><span class="n">dp_sum_query</span><span class="p">,</span> <span class="n">ledger</span><span class="o">=</span><span class="n">ledger</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">dp_sum_query</span><span class="o">=</span><span class="n">dp_sum_query</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ledger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp_sum_query</span><span class="o">.</span><span class="n">ledger</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Michael Hutchinson, Mrinank Sharma
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

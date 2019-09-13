@@ -1,0 +1,7 @@
+pytorch\_privacy.analysis.privacy\_ledger module
+================================================
+
+.. automodule:: pytorch_privacy.analysis.privacy_ledger
+   :members:
+   :undoc-members:
+   :show-inheritance:

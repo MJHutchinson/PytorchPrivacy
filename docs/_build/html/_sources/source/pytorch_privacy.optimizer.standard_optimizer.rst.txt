@@ -1,0 +1,7 @@
+pytorch\_privacy.optimizer.standard\_optimizer module
+=====================================================
+
+.. automodule:: pytorch_privacy.optimizer.standard_optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:

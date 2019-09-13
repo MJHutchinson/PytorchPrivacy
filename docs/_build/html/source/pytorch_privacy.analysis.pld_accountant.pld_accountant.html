@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pytorch_privacy.analysis.pld_accountant.pld_accountant module &mdash; Pytorch Privacy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pytorch_privacy.analysis.online_accountant module" href="pytorch_privacy.analysis.online_accountant.html" />
+    <link rel="prev" title="pytorch_privacy.analysis.pld_accountant package" href="pytorch_privacy.analysis.pld_accountant.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pytorch Privacy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">PytorchPrivacy</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Application Programming Interface</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pytorch_privacy.analysis.html">pytorch_privacy.analysis package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pytorch_privacy.analysis.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pytorch_privacy.analysis.moment_accountant.html">pytorch_privacy.analysis.moment_accountant package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pytorch_privacy.analysis.pld_accountant.html">pytorch_privacy.analysis.pld_accountant package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pytorch_privacy.analysis.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.analysis.moment_accountant.html">pytorch_privacy.analysis.moment_accountant package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.analysis.moment_accountant.log_moment_utils.html">pytorch_privacy.analysis.moment_accountant.log_moment_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.analysis.moment_accountant.moment_accountant.html">pytorch_privacy.analysis.moment_accountant.moment_accountant module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.analysis.online_accountant.html">pytorch_privacy.analysis.online_accountant module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="pytorch_privacy.analysis.pld_accountant.html">pytorch_privacy.analysis.pld_accountant package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pytorch_privacy.analysis.pld_accountant.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pytorch_privacy.analysis.pld_accountant.pld_accountant module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pytorch_privacy.analysis.pld_accountant.pld_accountant module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.analysis.privacy_ledger.html">pytorch_privacy.analysis.privacy_ledger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.analysis.utils.html">pytorch_privacy.analysis.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.dp_query.html">pytorch_privacy.dp_query package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.dp_query.dp_query.html">pytorch_privacy.dp_query.dp_query module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.dp_query.gaussian_query.html">pytorch_privacy.dp_query.gaussian_query module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.optimizer.html">pytorch_privacy.optimizer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.optimizer.dp_optimizer.html">pytorch_privacy.optimizer.dp_optimizer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.optimizer.standard_optimizer.html">pytorch_privacy.optimizer.standard_optimizer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.optimizer.wrapper_optimizer.html">pytorch_privacy.optimizer.wrapper_optimizer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.utils.html">pytorch_privacy.utils package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.utils.numpy_nest_utils.html">pytorch_privacy.utils.numpy_nest_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.utils.numpy_utils.html">pytorch_privacy.utils.numpy_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.utils.test_numpy_utils.html">pytorch_privacy.utils.test_numpy_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.utils.torch_nest_utils.html">pytorch_privacy.utils.torch_nest_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorch_privacy.utils.torch_tensor_buffer.html">pytorch_privacy.utils.torch_tensor_buffer module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pytorch Privacy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">Application Programming Interface</a> &raquo;</li>
+        
+          <li><a href="pytorch_privacy.analysis.html">pytorch_privacy.analysis package</a> &raquo;</li>
+        
+          <li><a href="pytorch_privacy.analysis.pld_accountant.html">pytorch_privacy.analysis.pld_accountant package</a> &raquo;</li>
+        
+      <li>pytorch_privacy.analysis.pld_accountant.pld_accountant module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/pytorch_privacy.analysis.pld_accountant.pld_accountant.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-pytorch_privacy.analysis.pld_accountant.pld_accountant">
+<span id="pytorch-privacy-analysis-pld-accountant-pld-accountant-module"></span><h1>pytorch_privacy.analysis.pld_accountant.pld_accountant module<a class="headerlink" href="#module-pytorch_privacy.analysis.pld_accountant.pld_accountant" title="Permalink to this headline">¶</a></h1>
+<p>Paper: <a class="reference external" href="https://arxiv.org/abs/1906.03049">https://arxiv.org/abs/1906.03049</a>
+Referenced code from: <a class="reference external" href="https://github.com/DPBayes/PLD-Accountant">https://github.com/DPBayes/PLD-Accountant</a></p>
+<dl class="function">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.compute_online_privacy_from_ledger">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">compute_online_privacy_from_ledger</code><span class="sig-paren">(</span><em class="sig-param">ledger</em>, <em class="sig-param">F_prod</em>, <em class="sig-param">target_delta=None</em>, <em class="sig-param">target_eps=None</em>, <em class="sig-param">adjacency_definition='add_remove'</em>, <em class="sig-param">nx=1000000.0</em>, <em class="sig-param">L=50.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#compute_online_privacy_from_ledger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.compute_online_privacy_from_ledger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute new PLD privacy in an online fashion, to speed up computation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ledger</strong> – The ledger of queries to compute for. An incremental ledger,</p>
+</dd>
+</dl>
+<p>NOT the whole ledger.
+:param target_eps: A target epsilon to aim for.
+:param target_delta: A target delta to aim for.
+:param adjacency_definition: The definition of adjacent datasets to use. Can be
+‘add_remove’ or ‘substitution’
+:param nx: The number of discretisation points to use.
+:param L: The range truncation parameter
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.compute_privacy_loss_from_ledger">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">compute_privacy_loss_from_ledger</code><span class="sig-paren">(</span><em class="sig-param">ledger</em>, <em class="sig-param">target_eps=None</em>, <em class="sig-param">target_delta=None</em>, <em class="sig-param">adjacency_definition='add_remove'</em>, <em class="sig-param">nx=1000000.0</em>, <em class="sig-param">L=50.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#compute_privacy_loss_from_ledger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.compute_privacy_loss_from_ledger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the privacy loss of the queries entered into a ledger
+using the Gaussian Mechanism utilising an approximation to the true privacy bound
+(<a class="reference external" href="https://arxiv.org/abs/1906.03049">https://arxiv.org/abs/1906.03049</a>) with one of epsilon or delta fixed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ledger</strong> – The ledger of queries to compute for</p></li>
+<li><p><strong>target_eps</strong> – A target epsilon to aim for.</p></li>
+<li><p><strong>target_delta</strong> – A target delta to aim for.</p></li>
+<li><p><strong>adjacency_definition</strong> – The definition of adjacent datasets to use. Can be</p></li>
+</ul>
+</dd>
+</dl>
+<p>‘add_remove’ or ‘substitution’
+:param nx: The number of discretisation points to use.
+:param L: The range truncation parameter
+:return: epsilon, delta</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.get_FF1_add_remove">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">get_FF1_add_remove</code><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#get_FF1_add_remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.get_FF1_add_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a single Gaussian Mechanism, compute the FFT approximation points for
+the privacy loss distribution, under the addition/removal adjacency definition.
+:param sigma: The effective noise applied
+:param q: The sample probability
+:param nx: The number of approximation points
+:param L: The clipping length of the approximation
+:return: The FFT approximation points</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.get_FF1_substitution">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">get_FF1_substitution</code><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#get_FF1_substitution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.get_FF1_substitution" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a single Gaussian Mechanism, compute the FFT approximation points for
+the privacy loss distribution, under the substitution adjacency definition.
+:param sigma: The effective noise applied
+:param q: The sample probability
+:param nx: The number of approximation points
+:param L: The clipping length of the approximation
+:return: The FFT approximation points</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.get_delta_add_remove">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">get_delta_add_remove</code><span class="sig-paren">(</span><em class="sig-param">effective_z_t</em>, <em class="sig-param">q_t</em>, <em class="sig-param">target_eps=1.0</em>, <em class="sig-param">nx=1000000.0</em>, <em class="sig-param">L=20.0</em>, <em class="sig-param">F_prod=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#get_delta_add_remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.get_delta_add_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the approximation of the exact privacy as per <a class="reference external" href="https://arxiv.org/abs/1906.03049">https://arxiv.org/abs/1906.03049</a>
+for a fixed epsilon, for a list of given mechanisms applied. Considers neighbouring sets
+as those with the addition/removal property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>effective_z_t</strong> – 1D numpy array of the effective noises applied in the mechanisms.</p></li>
+<li><p><strong>q_t</strong> – 1D numpy array of the selection probabilities of the data used in the mechanisms.</p></li>
+<li><p><strong>target_eps</strong> – The target epsilon to aim for.</p></li>
+<li><p><strong>nx</strong> – The number of discretisation points to use.</p></li>
+<li><p><strong>L</strong> – The range truncation parameter</p></li>
+<li><p><strong>F_prod</strong> – Specify a previous F_prod for computing online accountancy. If none, assume not</p></li>
+</ul>
+</dd>
+</dl>
+<p>online.
+:return: (epsilon, delta) privacy bound.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.get_delta_substitution">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">get_delta_substitution</code><span class="sig-paren">(</span><em class="sig-param">effective_z_t</em>, <em class="sig-param">q_t</em>, <em class="sig-param">target_eps=1.0</em>, <em class="sig-param">nx=1000000.0</em>, <em class="sig-param">L=20.0</em>, <em class="sig-param">F_prod=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#get_delta_substitution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.get_delta_substitution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the approximation of the exact privacy as per <a class="reference external" href="https://arxiv.org/abs/1906.03049">https://arxiv.org/abs/1906.03049</a>
+for a fixed epsilon, for a list of given mechanisms applied. Considers neighbouring sets
+as those with the substitution property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>effective_z_t</strong> – 1D numpy array of the effective noises applied in the mechanisms.</p></li>
+<li><p><strong>q_t</strong> – 1D numpy array of the selection probabilities of the data used in the mechanisms.</p></li>
+<li><p><strong>target_eps</strong> – The target epsilon to aim for.</p></li>
+<li><p><strong>nx</strong> – The number of discretisation points to use.</p></li>
+<li><p><strong>L</strong> – The range truncation parameter</p></li>
+<li><p><strong>F_prod</strong> – Specify a previous F_prod for computing online accountancy. If none, assume not</p></li>
+</ul>
+</dd>
+</dl>
+<p>online.
+:return: (epsilon, delta) privacy bound.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.get_eps_add_remove">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">get_eps_add_remove</code><span class="sig-paren">(</span><em class="sig-param">effective_z_t</em>, <em class="sig-param">q_t</em>, <em class="sig-param">target_delta=1e-06</em>, <em class="sig-param">nx=1000000.0</em>, <em class="sig-param">L=20.0</em>, <em class="sig-param">F_prod=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#get_eps_add_remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.get_eps_add_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the approximation of the exact privacy as per <a class="reference external" href="https://arxiv.org/abs/1906.03049">https://arxiv.org/abs/1906.03049</a>
+for a fixed epsilon, for a list of given mechanisms applied. Considers neighbouring sets
+as those with the addition/removal property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>effective_z_t</strong> – 1D numpy array of the effective noises applied in the mechanisms.</p></li>
+<li><p><strong>q_t</strong> – 1D numpy array of the selection probabilities of the data used in the mechanisms.</p></li>
+<li><p><strong>target_delta</strong> – The target delta to aim for.</p></li>
+<li><p><strong>nx</strong> – The number of discretisation points to use.</p></li>
+<li><p><strong>L</strong> – The range truncation parameter</p></li>
+<li><p><strong>F_prod</strong> – Specify a previous F_prod for computing online accountancy. If none, assume not</p></li>
+</ul>
+</dd>
+</dl>
+<p>online.
+:return: (epsilon, delta) privacy bound.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.get_eps_add_remove_fixed_params">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">get_eps_add_remove_fixed_params</code><span class="sig-paren">(</span><em class="sig-param">target_delta=1e-06</em>, <em class="sig-param">sigma=2.0</em>, <em class="sig-param">q=0.01</em>, <em class="sig-param">ncomp=10000.0</em>, <em class="sig-param">nx=1000000.0</em>, <em class="sig-param">L=20.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#get_eps_add_remove_fixed_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.get_eps_add_remove_fixed_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pytorch_privacy.analysis.pld_accountant.pld_accountant.get_eps_substitution">
+<code class="sig-prename descclassname">pytorch_privacy.analysis.pld_accountant.pld_accountant.</code><code class="sig-name descname">get_eps_substitution</code><span class="sig-paren">(</span><em class="sig-param">effective_z_t</em>, <em class="sig-param">q_t</em>, <em class="sig-param">target_delta=1e-06</em>, <em class="sig-param">nx=1000000.0</em>, <em class="sig-param">L=20.0</em>, <em class="sig-param">F_prod=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorch_privacy/analysis/pld_accountant/pld_accountant.html#get_eps_substitution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_privacy.analysis.pld_accountant.pld_accountant.get_eps_substitution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the approximation of the exact privacy as per <a class="reference external" href="https://arxiv.org/abs/1906.03049">https://arxiv.org/abs/1906.03049</a>
+for a fixed epsilon, for a list of given mechanisms applied. Considers neighbouring sets
+as those with the substitution property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>effective_z_t</strong> – 1D numpy array of the effective noises applied in the mechanisms.</p></li>
+<li><p><strong>q_t</strong> – 1D numpy array of the selection probabilities of the data used in the mechanisms.</p></li>
+<li><p><strong>target_delta</strong> – The target delta to aim for.</p></li>
+<li><p><strong>nx</strong> – The number of discretisation points to use.</p></li>
+<li><p><strong>L</strong> – The range truncation parameter</p></li>
+<li><p><strong>F_prod</strong> – Specify a previous F_prod for computing online accountancy. If none, assume not</p></li>
+</ul>
+</dd>
+</dl>
+<p>online.
+:return: (epsilon, delta) privacy bound.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pytorch_privacy.analysis.online_accountant.html" class="btn btn-neutral float-right" title="pytorch_privacy.analysis.online_accountant module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pytorch_privacy.analysis.pld_accountant.html" class="btn btn-neutral float-left" title="pytorch_privacy.analysis.pld_accountant package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Michael Hutchinson, Mrinank Sharma
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

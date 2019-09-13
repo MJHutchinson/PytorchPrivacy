@@ -1,0 +1,7 @@
+pytorch\_privacy.dp\_query.gaussian\_query module
+=================================================
+
+.. automodule:: pytorch_privacy.dp_query.gaussian_query
+   :members:
+   :undoc-members:
+   :show-inheritance:
