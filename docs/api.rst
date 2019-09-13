@@ -1,12 +1,22 @@
-Application Programming Interface
-=================================
+Application Programming Interface Overview
+==========================================
 
-.. automodule:: pytorch_privacy
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 .. toctree::
-   :glob:
+    :hidden:
 
-   source/pytorch_privacy.*
+.. contents:: :local:
+
+
+Modules
+-------
+
+Pytorch Privacy consists of the following subpackages:
+
+.. toctree::
+    :maxdepth: 2
+
+    source/analysis/analysis.rst
+    source/dp_query/dp_query.rst
+    source/optimizer/optimizer.rst
+    source/utils/utils.rst

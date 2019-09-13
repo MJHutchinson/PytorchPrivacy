@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from .log_moment_utils import generate_log_moments
+from pytorch_privacy.analysis.log_moment_utils import generate_log_moments
 
 
 def _compute_eps(max_lambda, total_log_moments, target_delta):

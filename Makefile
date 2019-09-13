@@ -4,13 +4,16 @@ PACKAGE := pytorch_privacy
 
 docmake:
 	rm -rf docs/source
-	sphinx-apidoc -eMT -o docs/source/ $(PACKAGE)
-	rm docs/source/$(PACKAGE).rst
+	sphinx-apidoc -eMT -o docs/source/analysis $(PACKAGE)/analysis
+	sphinx-apidoc -eMT -o docs/source/dp_query $(PACKAGE)/dp_query
+	sphinx-apidoc -eMT -o docs/source/optimizer $(PACKAGE)/optimizer
+	sphinx-apidoc -eMT -o docs/source/utils $(PACKAGE)/utils
+	# rm docs/source/$(PACKAGE).rst
 	pandoc --from=markdown --to=rst --output=docs/readme.rst README.md
 	cd docs && make html
 
 docopen:
-	open docs/_build/html/index.html
+	xdg-open docs/_build/html/index.html
 
 docinit:
 	$(eval BRANCH := $(shell git rev-parse --abbrev-ref HEAD))
