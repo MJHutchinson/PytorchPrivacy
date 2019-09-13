@@ -1,0 +1,7 @@
+utils.numpy\_utils module
+=========================
+
+.. automodule:: utils.numpy_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

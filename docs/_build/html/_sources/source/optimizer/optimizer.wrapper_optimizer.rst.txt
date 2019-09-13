@@ -1,0 +1,7 @@
+optimizer.wrapper\_optimizer module
+===================================
+
+.. automodule:: optimizer.wrapper_optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:

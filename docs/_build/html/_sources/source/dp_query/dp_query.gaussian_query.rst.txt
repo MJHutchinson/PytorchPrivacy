@@ -1,0 +1,7 @@
+dp\_query.gaussian\_query module
+================================
+
+.. automodule:: dp_query.gaussian_query
+   :members:
+   :undoc-members:
+   :show-inheritance:

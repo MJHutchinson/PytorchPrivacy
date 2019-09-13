@@ -1,0 +1,7 @@
+****************************
+``pytorch_privacy.dp_query``
+****************************
+
+.. automodule:: pytorch_privacy.dp_query
+    :no-members:
+    :no-inherited-members:

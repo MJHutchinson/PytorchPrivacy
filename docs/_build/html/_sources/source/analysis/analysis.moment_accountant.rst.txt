@@ -1,0 +1,7 @@
+analysis.moment\_accountant module
+==================================
+
+.. automodule:: analysis.moment_accountant
+   :members:
+   :undoc-members:
+   :show-inheritance:

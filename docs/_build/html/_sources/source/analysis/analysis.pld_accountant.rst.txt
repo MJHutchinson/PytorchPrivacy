@@ -1,0 +1,7 @@
+analysis.pld\_accountant module
+===============================
+
+.. automodule:: analysis.pld_accountant
+   :members:
+   :undoc-members:
+   :show-inheritance:

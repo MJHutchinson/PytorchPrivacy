@@ -1,15 +1,7 @@
-pytorch\_privacy.analysis.moment\_accountant package
-====================================================
+pytorch\_privacy.analysis.moment\_accountant module
+===================================================
 
 .. automodule:: pytorch_privacy.analysis.moment_accountant
    :members:
    :undoc-members:
    :show-inheritance:
-
-Submodules
-----------
-
-.. toctree::
-
-   pytorch_privacy.analysis.moment_accountant.log_moment_utils
-   pytorch_privacy.analysis.moment_accountant.moment_accountant

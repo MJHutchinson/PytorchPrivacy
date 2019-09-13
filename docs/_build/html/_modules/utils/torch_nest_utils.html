@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>utils.torch_nest_utils &mdash; Pytorch Privacy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pytorch Privacy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">PytorchPrivacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Application Programming Interface Overview</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pytorch Privacy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>utils.torch_nest_utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for utils.torch_nest_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+
+
+<div class="viewcode-block" id="map_structure"><a class="viewcode-back" href="../../source/utils/utils.torch_nest_utils.html#utils.torch_nest_utils.map_structure">[docs]</a><span class="k">def</span> <span class="nf">map_structure</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="o">*</span><span class="n">param_groups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Expects a pair of list of lists of identical structure representing</span>
+<span class="sd">    two sets of parameter states. This will apply the desired operation to</span>
+<span class="sd">    each element in the two groups</span>
+<span class="sd">    :param param_groups_1: The first parameter group</span>
+<span class="sd">    :param param_groups_2: The second parameter group</span>
+<span class="sd">    :return: A list of lists which is the result of the operation applied to</span>
+<span class="sd">    each pair of elements in the inputs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">param_groups_return</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">groups</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">param_groups</span><span class="p">):</span>
+        <span class="n">group_grads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ps</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">groups</span><span class="p">):</span>
+            <span class="n">group_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operation</span><span class="p">(</span><span class="o">*</span><span class="n">ps</span><span class="p">))</span>
+        <span class="n">param_groups_return</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_grads</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">param_groups_return</span></div>
+
+
+<div class="viewcode-block" id="reduce_structure"><a class="viewcode-back" href="../../source/utils/utils.torch_nest_utils.html#utils.torch_nest_utils.reduce_structure">[docs]</a><span class="k">def</span> <span class="nf">reduce_structure</span><span class="p">(</span><span class="n">reduce</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">,</span> <span class="n">param_groups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Applies an operation to the elements of a parameter group and accumulates</span>
+<span class="sd">    the result via specificed functions</span>
+<span class="sd">    :param reduce: The reducing operation</span>
+<span class="sd">    :param accumulate: The accumulating operation</span>
+<span class="sd">    :param param_groups: The</span>
+<span class="sd">    :return: The accumulated result</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">param_groups</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">accumulate</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">result</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../source/utils/utils.torch_nest_utils.html#utils.torch_nest_utils.flatten">[docs]</a><span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">param_groups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Flattens out a pair of list of lists representing a param_group into</span>
+<span class="sd">    a single list</span>
+<span class="sd">    :param param_groups: The group to flatten</span>
+<span class="sd">    :return: The flattened list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">param_groups</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="parameters_to_tensor_groups"><a class="viewcode-back" href="../../source/utils/utils.torch_nest_utils.html#utils.torch_nest_utils.parameters_to_tensor_groups">[docs]</a><span class="k">def</span> <span class="nf">parameters_to_tensor_groups</span><span class="p">(</span><span class="n">parameter_groups</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Function to reduce a parameter group from an optimizer to tensor_group with</span>
+<span class="sd">    the same structure and just the requested parameter</span>
+<span class="sd">    :param parameter_groups: The parameter group to extract from</span>
+<span class="sd">    :param attribute: The attribute from the parameter to extrect, e.g. data or grad</span>
+<span class="sd">    :return: a tensor_group of the same shape ocnting the requested attribute</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tensor_group_return</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">parameter_groups</span><span class="p">:</span>
+        <span class="n">group_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ps</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+            <span class="n">group_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ps</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
+            <span class="n">tensor_group_return</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_attrs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tensor_group_return</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Michael Hutchinson, Mrinank Sharma
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

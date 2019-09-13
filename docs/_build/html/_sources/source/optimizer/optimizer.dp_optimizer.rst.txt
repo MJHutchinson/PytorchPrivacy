@@ -1,0 +1,7 @@
+optimizer.dp\_optimizer module
+==============================
+
+.. automodule:: optimizer.dp_optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:

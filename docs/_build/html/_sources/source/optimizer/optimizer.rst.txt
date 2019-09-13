@@ -1,0 +1,16 @@
+optimizer package
+=================
+
+.. automodule:: optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   optimizer.dp_optimizer
+   optimizer.standard_optimizer
+   optimizer.wrapper_optimizer

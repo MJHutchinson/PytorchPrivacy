@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Application Programming Interface" href="api.html" />
+    <link rel="next" title="Application Programming Interface Overview" href="api.html" />
     <link rel="prev" title="Welcome to Pytorch Privacy’s documentation!" href="index.html" /> 
 </head>
 
@@ -81,8 +81,14 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">PytorchPrivacy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">Application Programming Interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PytorchPrivacy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#code-organisation">Code organisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-quick-example">A quick example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-tutorials">Further tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Application Programming Interface Overview</a></li>
 </ul>
 
             
@@ -150,8 +156,40 @@
   <div class="section" id="pytorchprivacy">
 <h1>PytorchPrivacy<a class="headerlink" href="#pytorchprivacy" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://travis-ci.org/MJHutchinson/PytorchPrivacy"><img alt="Build Status" src="https://travis-ci.org/MJHutchinson/PytorchPrivacy.svg?branch=master" /></a> <a class="reference external" href="https://MJHutchinson.github.io/PytorchPrivacy"><img alt="Docs" src="https://readthedocs.org/projects/docs/badge/?version=latest" /></a> <a class="reference external" href="https://coveralls.io/github/MJHutchinson/PytorchPrivacy?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/MJHutchinson/PytorchPrivacy/badge.svg?branch=master" /></a></p>
-<p>Implementation of various utilities for performing Differential Privacy
-operations in PyTorch.</p>
+<p>This library provides the functionality to easily perform Differentially
+Private (DP) algorithms in python, with specific extensions to allow a
+user to quickly apply DP to Pytorch gradient based optimisers.</p>
+<div class="section" id="code-organisation">
+<h2>Code organisation<a class="headerlink" href="#code-organisation" title="Permalink to this headline">¶</a></h2>
+<p>The code is organised into 3 distinct sections.:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://github.com/MJHutchinson/PytorchPrivacy/tree/master/pytorch_privacy/dp_query">dp_query</a>
+contains the code that defines generic DP queries (also called
+mechanisms), how they should process data to keep it private, and a
+ledger to keep a record of how data has been accessed in a DP way.</p></li>
+<li><p><a class="reference external" href="https://github.com/MJHutchinson/PytorchPrivacy/tree/master/pytorch_privacy/analysis">analysis</a>
+contains the code to compute the resulting privacy bound from a
+series of DP queries stored in a ledger defined in
+<a class="reference external" href="https://github.com/MJHutchinson/PytorchPrivacy/tree/master/pytorch_privacy/dp_query">dp_query</a>.</p></li>
+<li><p><a class="reference external" href="https://github.com/MJHutchinson/PytorchPrivacy/tree/master/pytorch_privacy/optimizer">optimizer</a>
+provides a way to wrap up Pytorch Optimiser with a model, a loss
+function, and a DP query to do differntially private optimisation of
+Pytorch models.</p></li>
+</ol>
+<p>Additional utilities are found in
+<a class="reference external" href="https://github.com/MJHutchinson/PytorchPrivacy/tree/master/pytorch_privacy/utils">utlis</a></p>
+</div>
+<div class="section" id="a-quick-example">
+<h2>A quick example<a class="headerlink" href="#a-quick-example" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="further-tutorials">
+<h2>Further tutorials<a class="headerlink" href="#further-tutorials" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p>Some inspiration was drawn from the <a class="reference external" href="https://github.com/tensorflow/privacy">Tensoflow Privacy
+library</a>.</p>
+</div>
 </div>
 
 
@@ -162,7 +200,7 @@ operations in PyTorch.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api.html" class="btn btn-neutral float-right" title="Application Programming Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="api.html" class="btn btn-neutral float-right" title="Application Programming Interface Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Pytorch Privacy’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -1,0 +1,21 @@
+Application Programming Interface Overview
+==========================================
+
+
+.. toctree::
+    :hidden:
+
+.. contents:: :local:
+
+
+Modules
+-------
+
+Pytorch Privacy consists of the following subpackages:
+
+.. toctree::
+    :maxdepth: 1
+
+    ../source/analysis.rst
+    ../source/dp_query.rst
+    ../source/optimizer.rst

@@ -1,0 +1,7 @@
+optimizer.standard\_optimizer module
+====================================
+
+.. automodule:: optimizer.standard_optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>utils.numpy_nest_utils module &mdash; Pytorch Privacy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="utils.numpy_utils module" href="utils.numpy_utils.html" />
+    <link rel="prev" title="utils package" href="utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pytorch Privacy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">PytorchPrivacy</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">Application Programming Interface Overview</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../api.html#modules">Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../analysis/analysis.html">analysis package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dp_query/dp_query.html">dp_query package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../optimizer/optimizer.html">optimizer package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="utils.html">utils package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="utils.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pytorch Privacy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../api.html">Application Programming Interface Overview</a> &raquo;</li>
+        
+          <li><a href="utils.html">utils package</a> &raquo;</li>
+        
+      <li>utils.numpy_nest_utils module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/source/utils/utils.numpy_nest_utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-utils.numpy_nest_utils">
+<span id="utils-numpy-nest-utils-module"></span><h1>utils.numpy_nest_utils module<a class="headerlink" href="#module-utils.numpy_nest_utils" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="utils.numpy_nest_utils.apply_to_structure">
+<code class="sig-prename descclassname">utils.numpy_nest_utils.</code><code class="sig-name descname">apply_to_structure</code><span class="sig-paren">(</span><em class="sig-param">op</em>, <em class="sig-param">param_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/utils/numpy_nest_utils.html#apply_to_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.numpy_nest_utils.apply_to_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the op operation to every entry in the dict</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.numpy_nest_utils.flatten">
+<code class="sig-prename descclassname">utils.numpy_nest_utils.</code><code class="sig-name descname">flatten</code><span class="sig-paren">(</span><em class="sig-param">d</em>, <em class="sig-param">parent_key=''</em>, <em class="sig-param">sep='.'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/utils/numpy_nest_utils.html#flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.numpy_nest_utils.flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flatten a given nested dictionary set up, concatenating keys with sep.
+:param d: The nested dictionary structure
+:param parent_key: The initial key to prepend to all entries
+:param sep: the separator to place between nested keys
+:return: The flattened dictionary</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.numpy_nest_utils.map_structure">
+<code class="sig-prename descclassname">utils.numpy_nest_utils.</code><code class="sig-name descname">map_structure</code><span class="sig-paren">(</span><em class="sig-param">op</em>, <em class="sig-param">*param_dicts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/utils/numpy_nest_utils.html#map_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.numpy_nest_utils.map_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a series of identically structured dicts, apply op to every same set of entries and return a single dict
+of the same shape</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.numpy_nest_utils.reduce_structure">
+<code class="sig-prename descclassname">utils.numpy_nest_utils.</code><code class="sig-name descname">reduce_structure</code><span class="sig-paren">(</span><em class="sig-param">reduce</em>, <em class="sig-param">accumulate</em>, <em class="sig-param">*param_dicts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/utils/numpy_nest_utils.html#reduce_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.numpy_nest_utils.reduce_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>For every element in the structure, apply the reduce operation and accumulate it to the rest with the
+accumulate operation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.numpy_nest_utils.structured_lists_to_lists">
+<code class="sig-prename descclassname">utils.numpy_nest_utils.</code><code class="sig-name descname">structured_lists_to_lists</code><span class="sig-paren">(</span><em class="sig-param">l</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/utils/numpy_nest_utils.html#structured_lists_to_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.numpy_nest_utils.structured_lists_to_lists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.numpy_nest_utils.structured_ndarrays_to_lists">
+<code class="sig-prename descclassname">utils.numpy_nest_utils.</code><code class="sig-name descname">structured_ndarrays_to_lists</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/utils/numpy_nest_utils.html#structured_ndarrays_to_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.numpy_nest_utils.structured_ndarrays_to_lists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="utils.numpy_utils.html" class="btn btn-neutral float-right" title="utils.numpy_utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="utils.html" class="btn btn-neutral float-left" title="utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Michael Hutchinson, Mrinank Sharma
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

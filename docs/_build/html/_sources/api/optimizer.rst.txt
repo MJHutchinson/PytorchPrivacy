@@ -1,0 +1,7 @@
+*****************************
+``pytorch_privacy.optimizer``
+*****************************
+
+.. automodule:: pytorch_privacy.optimizer
+    :no-members:
+    :no-inherited-members:

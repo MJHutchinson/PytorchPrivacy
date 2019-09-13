@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>dp_query.privacy_ledger &mdash; Pytorch Privacy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pytorch Privacy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">PytorchPrivacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Application Programming Interface Overview</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pytorch Privacy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>dp_query.privacy_ledger</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for dp_query.privacy_ledger</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">ceil</span>
+
+<span class="kn">import</span> <span class="nn">pytorch_privacy.utils.numpy_utils</span> <span class="k">as</span> <span class="nn">np_utils</span>
+<span class="kn">import</span> <span class="nn">pytorch_privacy.utils.torch_nest_utils</span> <span class="k">as</span> <span class="nn">nest</span>
+<span class="kn">from</span> <span class="nn">pytorch_privacy.dp_query</span> <span class="k">import</span> <span class="n">dp_query</span>
+<span class="kn">from</span> <span class="nn">pytorch_privacy.utils.torch_tensor_buffer</span> <span class="k">import</span> <span class="n">TensorBuffer</span>
+
+<span class="n">SampleEntry</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>  <span class="c1"># pylint: disable=invalid-name</span>
+    <span class="s1">&#39;SampleEntry&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;population_size&#39;</span><span class="p">,</span> <span class="s1">&#39;selection_probability&#39;</span><span class="p">,</span> <span class="s1">&#39;queries&#39;</span><span class="p">])</span>
+
+<span class="n">GaussianSumQueryEntry</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>  <span class="c1"># pylint: disable=invalid-name</span>
+    <span class="s1">&#39;GaussianSumQueryEntry&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;l2_norm_bound&#39;</span><span class="p">,</span> <span class="s1">&#39;noise_stddev&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="format_ledger"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.format_ledger">[docs]</a><span class="k">def</span> <span class="nf">format_ledger</span><span class="p">(</span><span class="n">sample_array</span><span class="p">,</span> <span class="n">query_array</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Converts array representation into a list of SampleEntries.</span>
+
+<span class="sd">    :param sample_array: samples are whole mechanisms applied to the data, i.e. minbatch -&gt; grads -&gt; clip -&gt; sum -&gt; noise</span>
+<span class="sd">    :param query_array: queries are the individual microbatch -&gt; grads -&gt; clip operations.</span>
+<span class="sd">    Composing these together is just a way of keeping a detailed record of what was done. Could be done in a flatter way</span>
+<span class="sd">    I think if you were worried about simplicity.</span>
+<span class="sd">    :return: A numpy + named tuple version of the TensorBuffer stored operations that have been applied to the data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">query_pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sample_pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">sample_array</span><span class="p">:</span>
+        <span class="n">population_size</span><span class="p">,</span> <span class="n">selection_probability</span><span class="p">,</span> <span class="n">num_queries</span> <span class="o">=</span> <span class="n">sample</span>
+        <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_queries</span><span class="p">)):</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query_array</span><span class="p">[</span><span class="n">query_pos</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">query</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="n">sample_pos</span>
+            <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GaussianSumQueryEntry</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">[</span><span class="n">np_utils</span><span class="o">.</span><span class="n">to_pure_python</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">query</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
+            <span class="p">))</span>
+            <span class="n">query_pos</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SampleEntry</span><span class="p">(</span><span class="n">np_utils</span><span class="o">.</span><span class="n">to_pure_python</span><span class="p">(</span><span class="n">population_size</span><span class="p">),</span>
+                                   <span class="n">np_utils</span><span class="o">.</span><span class="n">to_pure_python</span><span class="p">(</span><span class="n">selection_probability</span><span class="p">),</span>
+                                   <span class="n">queries</span><span class="p">))</span>
+        <span class="n">sample_pos</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">samples</span></div>
+
+
+<div class="viewcode-block" id="PrivacyLedger"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.PrivacyLedger">[docs]</a><span class="k">class</span> <span class="nc">PrivacyLedger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Class for keeping a record of all the privacy events that occur</span>
+<span class="sd">    through a DPQuery executed on a given dataset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population_size</span><span class="p">,</span> <span class="n">selection_probability</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialise the privacy ledger</span>
+
+<span class="sd">        :param population_size: A (variable) integer specifying the amount of data in</span>
+<span class="sd">        the datashard being kept private by the query. I.e. The amount of data</span>
+<span class="sd">        used to train in each epoch.</span>
+<span class="sd">        :param selection_probability: A (variable) float specifying the probability</span>
+<span class="sd">        that each record in the datashard is included in any given sample, i.e. the</span>
+<span class="sd">        number of minibatches.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_population_size</span> <span class="o">=</span> <span class="n">population_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection_probability</span> <span class="o">=</span> <span class="n">selection_probability</span>
+
+        <span class="c1"># Initial capacity such that we can hold one full epoch of updates</span>
+        <span class="n">init_capacity</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_probability</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query_buffer</span> <span class="o">=</span> <span class="n">TensorBuffer</span><span class="p">(</span><span class="n">init_capacity</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_buffer</span> <span class="o">=</span> <span class="n">TensorBuffer</span><span class="p">(</span><span class="n">init_capacity</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="PrivacyLedger.record_sum_query"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.PrivacyLedger.record_sum_query">[docs]</a>    <span class="k">def</span> <span class="nf">record_sum_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l2_clipping_bound</span><span class="p">,</span> <span class="n">noise_stddev</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Record a query that was issued in the ledger.</span>
+
+<span class="sd">        :param l2_clipping_bound: Max L2 norm of the tensor group in the query.</span>
+<span class="sd">        :param noise_stddev: The standard deviation of the noise applied to the sum.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_count</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_count</span><span class="p">,</span> <span class="n">l2_clipping_bound</span><span class="p">,</span> <span class="n">noise_stddev</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="PrivacyLedger.finalise_sample"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.PrivacyLedger.finalise_sample">[docs]</a>    <span class="k">def</span> <span class="nf">finalise_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Finalises sample and records sample ledger entry&quot;&quot;&quot;</span>
+        <span class="n">sample_var</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_population_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_probability</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_count</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sample_var</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_count</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query_count</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="PrivacyLedger.get_formatted_ledger"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.PrivacyLedger.get_formatted_ledger">[docs]</a>    <span class="k">def</span> <span class="nf">get_formatted_ledger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a formatted version of the ledger for use in privacy accounting &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">format_ledger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_buffer</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">_query_buffer</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="QueryWithLedger"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger">[docs]</a><span class="k">class</span> <span class="nc">QueryWithLedger</span><span class="p">(</span><span class="n">dp_query</span><span class="o">.</span><span class="n">DPQuery</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class for DPQueries that stores the queries in a privacy ledger.</span>
+
+<span class="sd">    Simple wrapper for a DQQuery-PrivacyLedger pair to ensure correct running.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">query</span><span class="p">,</span>
+                 <span class="n">population_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">selection_probability</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ledger</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query</span> <span class="o">=</span> <span class="n">query</span>
+        <span class="k">if</span> <span class="n">population_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">selection_probability</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_ledger</span><span class="p">(</span><span class="n">PrivacyLedger</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">selection_probability</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">ledger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_ledger</span><span class="p">(</span><span class="n">ledger</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;One of (population_size, selection_probability) or &#39;</span>
+                             <span class="s1">&#39;ledger must be specified.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ledger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span>
+
+<div class="viewcode-block" id="QueryWithLedger.set_ledger"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.set_ledger">[docs]</a>    <span class="k">def</span> <span class="nf">set_ledger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ledger</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span> <span class="o">=</span> <span class="n">ledger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">set_ledger</span><span class="p">(</span><span class="n">ledger</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span>
+
+<div class="viewcode-block" id="QueryWithLedger.initial_global_state"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.initial_global_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_global_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">initial_global_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QueryWithLedger.derive_sample_params"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.derive_sample_params">[docs]</a>    <span class="k">def</span> <span class="nf">derive_sample_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">derive_sample_params</span><span class="p">(</span><span class="n">global_state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithLedger.initial_sample_state"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.initial_sample_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_sample_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">initial_sample_state</span><span class="p">(</span><span class="n">template</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithLedger.preprocess_record"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.preprocess_record">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">preprocess_record</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithLedger.accumulate_preprocessed_record"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.accumulate_preprocessed_record">[docs]</a>    <span class="k">def</span> <span class="nf">accumulate_preprocessed_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">preprocessed_record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">accumulate_preprocessed_record</span><span class="p">(</span>
+            <span class="n">sample_state</span><span class="p">,</span> <span class="n">preprocessed_record</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithLedger.merge_sample_states"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.merge_sample_states">[docs]</a>    <span class="k">def</span> <span class="nf">merge_sample_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state_1</span><span class="p">,</span> <span class="n">sample_state_2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">merge_sample_states</span><span class="p">(</span><span class="n">sample_state_1</span><span class="p">,</span> <span class="n">sample_state_2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithLedger.get_noised_result"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.get_noised_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_noised_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">global_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ensures sample is recorded to the ledger and returns noised result.&quot;&quot;&quot;</span>
+        <span class="n">result</span><span class="p">,</span> <span class="n">new_global_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">get_noised_result</span><span class="p">(</span><span class="n">sample_state</span><span class="p">,</span> <span class="n">global_state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ledger</span><span class="o">.</span><span class="n">finalise_sample</span><span class="p">()</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tensor</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">result</span><span class="p">),</span> <span class="n">new_global_state</span></div>
+
+<div class="viewcode-block" id="QueryWithLedger.get_record_derived_data"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithLedger.get_record_derived_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_record_derived_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">get_record_derived_data</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="QueryWithPerClientLedger"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger">[docs]</a><span class="k">class</span> <span class="nc">QueryWithPerClientLedger</span><span class="p">(</span><span class="n">dp_query</span><span class="o">.</span><span class="n">DPQuery</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class for DPQueries that stores the queries in a privacy ledger.</span>
+
+<span class="sd">    Simple wrapper for a DQQuery-PrivacyLedger pair to ensure correct running.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">query</span><span class="p">,</span>
+                 <span class="n">num_clients</span><span class="p">,</span>
+                 <span class="n">selection_probability</span><span class="p">):</span>
+
+        <span class="c1"># note that this query ledger is not actually relevant here!!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">num_clients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query</span> <span class="o">=</span> <span class="n">query</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_ledgers</span><span class="p">([</span><span class="n">PrivacyLedger</span><span class="p">(</span><span class="n">num_clients</span><span class="p">,</span> <span class="n">selection_probability</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_clients</span><span class="p">)])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ledgers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ledgers</span>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.set_ledgers"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.set_ledgers">[docs]</a>    <span class="k">def</span> <span class="nf">set_ledgers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ledgers</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ledgers</span> <span class="o">=</span> <span class="n">ledgers</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.initial_global_state"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.initial_global_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_global_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">initial_global_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.derive_sample_params"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.derive_sample_params">[docs]</a>    <span class="k">def</span> <span class="nf">derive_sample_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">derive_sample_params</span><span class="p">(</span><span class="n">global_state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.initial_sample_state"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.initial_sample_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_sample_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">initial_sample_state</span><span class="p">(</span><span class="n">template</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.preprocess_record"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.preprocess_record">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">preprocess_record</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.accumulate_preprocessed_record"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.accumulate_preprocessed_record">[docs]</a>    <span class="k">def</span> <span class="nf">accumulate_preprocessed_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">preprocessed_record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">accumulate_preprocessed_record</span><span class="p">(</span>
+            <span class="n">sample_state</span><span class="p">,</span> <span class="n">preprocessed_record</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.merge_sample_states"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.merge_sample_states">[docs]</a>    <span class="k">def</span> <span class="nf">merge_sample_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state_1</span><span class="p">,</span> <span class="n">sample_state_2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See base class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">merge_sample_states</span><span class="p">(</span><span class="n">sample_state_1</span><span class="p">,</span> <span class="n">sample_state_2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.get_noised_result"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.get_noised_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_noised_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_state</span><span class="p">,</span> <span class="n">global_state</span><span class="p">,</span> <span class="n">selected_indices</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ensures sample is recorded to the ledger and returns noised result.&quot;&quot;&quot;</span>
+        <span class="n">result</span><span class="p">,</span> <span class="n">new_global_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">get_noised_result</span><span class="p">(</span><span class="n">sample_state</span><span class="p">,</span> <span class="n">global_state</span><span class="p">)</span>
+        <span class="c1"># record sum queries for each client who was selected</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">selected_indices</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ledgers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">record_sum_query</span><span class="p">(</span><span class="n">global_state</span><span class="o">.</span><span class="n">l2_norm_clip</span><span class="p">,</span> <span class="n">global_state</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ledgers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">finalise_sample</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tensor</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">result</span><span class="p">),</span> <span class="n">new_global_state</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">new_global_state</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.get_record_derived_data"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.get_record_derived_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_record_derived_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="o">.</span><span class="n">get_record_derived_data</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QueryWithPerClientLedger.get_formatted_ledgers"><a class="viewcode-back" href="../../source/dp_query/dp_query.privacy_ledger.html#dp_query.privacy_ledger.QueryWithPerClientLedger.get_formatted_ledgers">[docs]</a>    <span class="k">def</span> <span class="nf">get_formatted_ledgers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a formatted version of the ledger for use in privacy accounting &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">get_formatted_ledger</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ledgers</span><span class="p">]</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Michael Hutchinson, Mrinank Sharma
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
